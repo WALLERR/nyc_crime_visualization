@@ -2,12 +2,21 @@ This is to be updated
 
 
 
-How to render?
+1. How to render?
 
-1. bookdown::render_book("index.Rmd")
+bookdown::render_book("index.Rmd")
+
+used in Console
 
 
-## Dataset used:
+2. Public site:
+https://WALLERR.github.io/nyc_crime_visualization
+
+It can be visited once we set the repo as a public one.
+
+
+3. Dataset used:
 New York Crime
 * https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i?ref=hackernoon.com
 
+Time window: 2018-2020. To be discussed
