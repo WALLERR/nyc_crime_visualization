@@ -1,2 +1,12 @@
 # Data sources
 
+Data source of this project is from 
+
+[NYPD Complaint Data Historic] Provided by Police Department (NYPD)
+
+Link: https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i?ref=hackernoon.com
+
+
+The dataset has more than 7M rows and each row represents one complaint related to a crime event. 
+
+One complaint contains information related to the accident time, reported time, the event position, the characteristics of victim and suspect. According to the exact date of occurrence for the reported event, the year ranges from 1950 to 2020. We mainly focuses on 2018-2020 data, since it can better represent the most recent trend. 

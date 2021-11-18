@@ -7,5 +7,5 @@
 
 #gitignore for data directory
 
-.Rproj
+*.Rproj
 
