@@ -1,1 +1,17 @@
 # Missing values
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+## Column pattern
+Variables below have a large percentage of missing values:
+
+- PARKS_NM: Name of NYC park, playground or greenspace of occurrence, if applicable (state parks are not included).
+- HADEVELOPT: Name of NYCHA housing development of occurrence, if applicable.
+- HOUSING_PSA: Development Level Code.
+- TRANSIT_DISTRICT: Transit district in which the offense occurred.
+- STATION_NAME: Transit station name
+
+Hence it makes senses that the former 3 variables have missing values since not they are all possibly applicable variables, which means that when designing the columns, it is presumed that they might be null values.
+
