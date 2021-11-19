@@ -19,4 +19,10 @@ It can be visited once we set the repo as a public one.
 New York Crime
 * https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i?ref=hackernoon.com
 
+I put a filtered dataset on Google Drive
+
+https://drive.google.com/file/d/1XcgeBYjlhHm_sTgMwLbCFnWZnm1NpKmk/view?usp=sharing
+
+
+
 Time window: 2018-2020. To be discussed
