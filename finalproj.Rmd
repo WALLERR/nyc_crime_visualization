@@ -1,0 +1,544 @@
+--- 
+title: "Crime Visualization in New York City"
+author: "Zihao Zhang/ Yunshu Cai/ Moya Zhu"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+---
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+# Introduction
+
+<!--chapter:end:index.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Data sources
+
+Data source of this project is from 
+
+[NYPD Complaint Data Historic] Provided by Police Department (NYPD)
+
+Link: https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i?ref=hackernoon.com
+
+
+The dataset has more than 7M rows and each row represents one complaint related to a crime event. 
+
+One complaint contains information related to the accident time, reported time, the event position, the characteristics of victim and suspect. According to the exact date of occurrence for the reported event, the year ranges from 1950 to 2020. We mainly focuses on 2018-2020 data, since it can better represent the most recent trend. 
+
+<!--chapter:end:02-data.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Data transformation
+
+<!--chapter:end:03-cleaning.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Missing values
+```{r, echo=FALSE}
+# this prevents package loading message from appearing in the rendered version of your problem set
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(patchwork)
+```
+
+## Column pattern
+
+```{r, echo=FALSE}
+missing_plot_func <- function(inputdata, option) {
+  mycars = inputdata
+  n_vars = ncol(mycars)
+  n_rows = nrow(mycars)
+  if (option == 'counts') {
+    #create missing pattern
+    missing_patterns <- data.frame(is.na(mycars)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup()
+    n_rows = nrow(missing_patterns)
+    
+    #side plots
+    missing.values <- mycars %>%
+      select(everything()) %>%  # replace to your needs
+      summarise_all(funs(sum(is.na(.)))) %>%
+      gather(key = "key", value = "val") %>%
+      arrange(desc(val))
+    
+    s1 <- missing.values %>%
+      ggplot() +
+      geom_bar(aes(x = reorder(key,-val), y = val), fill = "#f68060", stat = 'identity') +
+      labs(x = 'variable', y = "number of missing values", title = 'Missing value pattern') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    
+    missing_patterns_withAP <- missing_patterns
+    selected <-
+      which(apply(missing_patterns[, -length(missing_patterns)], 1, any) == F[1])
+    alpha_vector = rep(1, nrow(missing_patterns_withAP))
+    alpha_vector[selected] = 2
+    missing_patterns_withAP$hl_alpha = alpha_vector
+    
+    missing_patterns_withAP["id"] <- as.factor(seq(1, n_rows))
+    s2_y = fct_reorder(missing_patterns_withAP$id,
+                       as.numeric(missing_patterns_withAP$id),
+                       .desc = TRUE)
+    # s2_y <- factor(s2_y, levels = sort(levels(s2_y), decreasing = TRUE))
+    
+    s2 <- missing_patterns_withAP %>%
+      ggplot() +
+      geom_bar(aes(
+        x = count,
+        fill = "#f68060",
+        s2_y,
+        alpha = hl_alpha
+      ), stat = 'identity') +
+      scale_alpha(range = c(0.45, 1)) +
+      labs(x = 'row count', y = '') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "none")
+    missing_patterns_cleaned <- select(missing_patterns, -count)
+    selected <-
+      which(apply(missing_patterns[,-length(missing_patterns)], 1, any) == F[1])
+  }
+  
+  if (option == 'percent') {
+    missing_patterns <-   data.frame(is.na(mycars)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup() %>%
+      mutate(pct = count / nrow(mycars))
+    #side 1 col
+    missing.values <- mycars %>%
+      select(everything()) %>%  # replace to your needs
+      summarise_all(funs(sum(is.na(.)))) %>%
+      gather(key = "key", value = "val") %>%
+      mutate(pct = val / n_rows) %>%
+      arrange(desc(pct))
+    
+    #    print(missing_patterns)
+    n_rows = nrow(missing_patterns)
+    
+    s1 <- missing.values %>%
+      ggplot() +
+      geom_bar(aes(x = reorder(key,-pct), y = pct), fill = "#f68060", stat = 'identity') +
+      labs(x = 'variable', y = "number percentage of missing values", title = 'Missing value pattern') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    #side 2 row
+    
+    missing_patterns_withAP <- missing_patterns
+    selected <-
+      which(apply(missing_patterns[1:n_vars], 1, any) == F[1])
+    alpha_vector = rep(1, nrow(missing_patterns_withAP))
+    alpha_vector[selected] = 2
+    missing_patterns_withAP$hl_alpha = alpha_vector
+    
+    missing_patterns_withAP["id"] <- as.factor(seq(1, n_rows))
+    s2_y = fct_reorder(missing_patterns_withAP$id,
+                       as.numeric(missing_patterns_withAP$id),
+                       .desc = TRUE)
+    #  s2_y <- factor(s2_y, levels = sort(levels(s2_y), decreasing = TRUE))
+    
+    s2 <- missing_patterns_withAP %>%
+      ggplot() +
+      geom_bar(aes(
+        x = pct,
+        fill = "#f68060",
+        s2_y,
+        alpha = hl_alpha
+      ), stat = 'identity') +
+      scale_alpha(range = c(0.45, 1)) +
+      labs(x = 'row percentage', y = '') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "none")
+    
+    missing_patterns_cleaned <-
+      select(missing_patterns, -c(count, pct))
+    
+    selected <-
+      which(apply(missing_patterns[,-c(length(missing_patterns), length(missing_patterns) -
+                                         1)], 1, any) == F[1])
+    
+  }
+  #create main plot
+  
+  missing_patterns_modified <- missing_patterns_cleaned %>%
+    rownames_to_column("id") %>%
+    gather(key, value, -id) %>%
+    mutate(missing = ifelse(value == 1, 1, 0)) %>%
+    mutate(missing_patterns[id, "count"])
+  
+  missing_patterns_merged <-
+    merge(x = missing.values,
+          y = missing_patterns_modified,
+          by = "key",
+          all = TRUE)
+  
+  y =  fct_reorder(missing_patterns_merged$id,
+                   as.numeric(missing_patterns_merged$id),
+                   .desc = TRUE)
+  #y <- factor(y, levels = sort(levels(y), decreasing = TRUE))
+  
+  #selected <- which(apply(missing_patterns[, -length(missing_patterns)], 1, any) == F[1])
+  alpha_vector = rep(1, nrow(missing_patterns_merged))
+  highlight <-
+    as.vector(which(missing_patterns_merged$id == selected))
+  
+  alpha_vector[highlight] = 2
+  missing_patterns_merged$hl_alpha = alpha_vector
+  
+  main <-
+    ggplot(missing_patterns_merged,
+           aes(
+             x = fct_reorder(key, val, .desc = TRUE),
+             y,
+             fill = as.factor(missing),
+             alpha = hl_alpha
+           )) +
+    geom_tile(color = "white") +
+    scale_fill_manual(values = c("grey", "mediumpurple")) +
+    scale_alpha(range = c(0.45, 1)) +
+    theme_bw() +
+    labs(x = 'variable', y = "missing pattern") +
+    
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  
+  #patchwork plot together
+  library(patchwork)
+  (s1 + plot_spacer()) /
+    (main |
+       s2 + plot_spacer()) +  plot_layout(ncol = 1,
+                                          width = c(4, 1),
+                                          heights = unit(c(1, 5), c('cm', 'null')))
+}
+```
+
+```{r, echo=FALSE}
+data = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+```
+
+After implementing our self-defined missing value plot function here, the plot is shown as below.
+
+```{r, echo=FALSE, fig.height=15, fig.width=30}
+data_visna = data
+# colnames(data_visna) <- colnames(data_visna) %>% substring(1, 10) 
+# # several column names are just too long...
+missing_plot_func(data_visna, 'percent')
+```
+
+According the plot, we found that variables below have a large ratio of missing values. We put the basic descriptions in corresponding variables:
+
+- PARKS_NM: Name of NYC park, playground or greenspace of occurrence, if applicable (state parks are not included).
+- HADEVELOPT: Name of NYCHA housing development of occurrence, if applicable.
+- HOUSING_PSA: Development Level Code.
+- TRANSIT_DISTRICT: Transit district in which the offense occurred.
+- STATION_NAME: Transit station name
+
+The descriptions show that it makes senses that the former 3 variables have missing values since they are all possibly applicable variables, which means that when being designed, it is presumed that there might be no values here.
+
+As the latter two variables, the logic is similar that not every crime event happens near a transit station.
+
+Left missing variables include:
+
+- SUSP_AGE_GROUP,
+- SUSP_RACE,
+- SUSP_SEX,
+- LOC_OF_OCCUR_DESC,
+- COMPLNT_TO_DT,
+- COMPLNT_TO_TM
+
+The latter three will not be used in our analysis. And as for the suspicion portrait, we decided to exclude them immediately since the proportion is not significant.
+
+<!--chapter:end:04-missing-copy.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Missing values
+```{r, echo=FALSE}
+# this prevents package loading message from appearing in the rendered version of your problem set
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(patchwork)
+```
+
+## Column pattern
+
+```{r, echo=FALSE}
+missing_plot_func <- function(inputdata, option) {
+  mycars = inputdata
+  n_vars = ncol(mycars)
+  n_rows = nrow(mycars)
+  if (option == 'counts') {
+    #create missing pattern
+    missing_patterns <- data.frame(is.na(mycars)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup()
+    n_rows = nrow(missing_patterns)
+    
+    #side plots
+    missing.values <- mycars %>%
+      select(everything()) %>%  # replace to your needs
+      summarise_all(funs(sum(is.na(.)))) %>%
+      gather(key = "key", value = "val") %>%
+      arrange(desc(val))
+    
+    s1 <- missing.values %>%
+      ggplot() +
+      geom_bar(aes(x = reorder(key,-val), y = val), fill = "#f68060", stat = 'identity') +
+      labs(x = 'variable', y = "number of missing values", title = 'Missing value pattern') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    
+    missing_patterns_withAP <- missing_patterns
+    selected <-
+      which(apply(missing_patterns[, -length(missing_patterns)], 1, any) == F[1])
+    alpha_vector = rep(1, nrow(missing_patterns_withAP))
+    alpha_vector[selected] = 2
+    missing_patterns_withAP$hl_alpha = alpha_vector
+    
+    missing_patterns_withAP["id"] <- as.factor(seq(1, n_rows))
+    s2_y = fct_reorder(missing_patterns_withAP$id,
+                       as.numeric(missing_patterns_withAP$id),
+                       .desc = TRUE)
+    # s2_y <- factor(s2_y, levels = sort(levels(s2_y), decreasing = TRUE))
+    
+    s2 <- missing_patterns_withAP %>%
+      ggplot() +
+      geom_bar(aes(
+        x = count,
+        fill = "#f68060",
+        s2_y,
+        alpha = hl_alpha
+      ), stat = 'identity') +
+      scale_alpha(range = c(0.45, 1)) +
+      labs(x = 'row count', y = '') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "none")
+    missing_patterns_cleaned <- select(missing_patterns, -count)
+    selected <-
+      which(apply(missing_patterns[,-length(missing_patterns)], 1, any) == F[1])
+  }
+  
+  if (option == 'percent') {
+    missing_patterns <-   data.frame(is.na(mycars)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup() %>%
+      mutate(pct = count / nrow(mycars))
+    #side 1 col
+    missing.values <- mycars %>%
+      select(everything()) %>%  # replace to your needs
+      summarise_all(funs(sum(is.na(.)))) %>%
+      gather(key = "key", value = "val") %>%
+      mutate(pct = val / n_rows) %>%
+      arrange(desc(pct))
+    
+    #    print(missing_patterns)
+    n_rows = nrow(missing_patterns)
+    
+    s1 <- missing.values %>%
+      ggplot() +
+      geom_bar(aes(x = reorder(key,-pct), y = pct), fill = "#f68060", stat = 'identity') +
+      labs(x = 'variable', y = "number percentage of missing values", title = 'Missing value pattern') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    #side 2 row
+    
+    missing_patterns_withAP <- missing_patterns
+    selected <-
+      which(apply(missing_patterns[1:n_vars], 1, any) == F[1])
+    alpha_vector = rep(1, nrow(missing_patterns_withAP))
+    alpha_vector[selected] = 2
+    missing_patterns_withAP$hl_alpha = alpha_vector
+    
+    missing_patterns_withAP["id"] <- as.factor(seq(1, n_rows))
+    s2_y = fct_reorder(missing_patterns_withAP$id,
+                       as.numeric(missing_patterns_withAP$id),
+                       .desc = TRUE)
+    #  s2_y <- factor(s2_y, levels = sort(levels(s2_y), decreasing = TRUE))
+    
+    s2 <- missing_patterns_withAP %>%
+      ggplot() +
+      geom_bar(aes(
+        x = pct,
+        fill = "#f68060",
+        s2_y,
+        alpha = hl_alpha
+      ), stat = 'identity') +
+      scale_alpha(range = c(0.45, 1)) +
+      labs(x = 'row percentage', y = '') +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "none")
+    
+    missing_patterns_cleaned <-
+      select(missing_patterns, -c(count, pct))
+    
+    selected <-
+      which(apply(missing_patterns[,-c(length(missing_patterns), length(missing_patterns) -
+                                         1)], 1, any) == F[1])
+    
+  }
+  #create main plot
+  
+  missing_patterns_modified <- missing_patterns_cleaned %>%
+    rownames_to_column("id") %>%
+    gather(key, value, -id) %>%
+    mutate(missing = ifelse(value == 1, 1, 0)) %>%
+    mutate(missing_patterns[id, "count"])
+  
+  missing_patterns_merged <-
+    merge(x = missing.values,
+          y = missing_patterns_modified,
+          by = "key",
+          all = TRUE)
+  
+  y =  fct_reorder(missing_patterns_merged$id,
+                   as.numeric(missing_patterns_merged$id),
+                   .desc = TRUE)
+  #y <- factor(y, levels = sort(levels(y), decreasing = TRUE))
+  
+  #selected <- which(apply(missing_patterns[, -length(missing_patterns)], 1, any) == F[1])
+  alpha_vector = rep(1, nrow(missing_patterns_merged))
+  highlight <-
+    as.vector(which(missing_patterns_merged$id == selected))
+  
+  alpha_vector[highlight] = 2
+  missing_patterns_merged$hl_alpha = alpha_vector
+  
+  main <-
+    ggplot(missing_patterns_merged,
+           aes(
+             x = fct_reorder(key, val, .desc = TRUE),
+             y,
+             fill = as.factor(missing),
+             alpha = hl_alpha
+           )) +
+    geom_tile(color = "white") +
+    scale_fill_manual(values = c("grey", "mediumpurple")) +
+    scale_alpha(range = c(0.45, 1)) +
+    theme_bw() +
+    labs(x = 'variable', y = "missing pattern") +
+    
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  
+  #patchwork plot together
+  library(patchwork)
+  (s1 + plot_spacer()) /
+    (main |
+       s2 + plot_spacer()) +  plot_layout(ncol = 1,
+                                          width = c(4, 1),
+                                          heights = unit(c(1, 5), c('cm', 'null')))
+}
+```
+
+```{r, echo=FALSE}
+data = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+```
+
+After implementing our self-defined missing value plot function here, the plot is shown as below.
+
+```{r, echo=FALSE, fig.height=15, fig.width=30}
+data_visna = data
+# colnames(data_visna) <- colnames(data_visna) %>% substring(1, 10) 
+# # several column names are just too long...
+missing_plot_func(data_visna, 'percent')
+```
+
+According the plot, we found that variables below have a large ratio of missing values. We put the basic descriptions in corresponding variables:
+
+- PARKS_NM: Name of NYC park, playground or greenspace of occurrence, if applicable (state parks are not included).
+- HADEVELOPT: Name of NYCHA housing development of occurrence, if applicable.
+- HOUSING_PSA: Development Level Code.
+- TRANSIT_DISTRICT: Transit district in which the offense occurred.
+- STATION_NAME: Transit station name
+
+The descriptions show that it makes senses that the former 3 variables have missing values since they are all possibly applicable variables, which means that when being designed, it is presumed that there might be no values here.
+
+As the latter two variables, the logic is similar that not every crime event happens near a transit station.
+
+Left missing variables include:
+
+- SUSP_AGE_GROUP,
+- SUSP_RACE,
+- SUSP_SEX,
+- LOC_OF_OCCUR_DESC,
+- COMPLNT_TO_DT,
+- COMPLNT_TO_TM
+
+The latter three will not be used in our analysis. And as for the suspicion portrait, we decided to exclude them immediately since the proportion is not significant.
+
+<!--chapter:end:04-missing.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Results
+
+<!--chapter:end:05-results.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Interactive component
+
+
+
+<!--chapter:end:06-interactive.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Conclusion
+
+
+<!--chapter:end:07-conclusion.Rmd-->
+

@@ -182,7 +182,7 @@ missing_plot_func <- function(inputdata, option) {
 ```
 
 ```{r, echo=FALSE}
-data = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+data = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 ```
 
 After implementing our self-defined missing value plot function here, the plot is shown as below.
