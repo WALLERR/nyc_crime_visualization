@@ -1,1 +1,170 @@
 # Results
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(dplyr)
+library(cowplot)
+library(ggplot2)
+library(ggalluvial)
+data = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+```
+
+## Data Visualization about portraits of suspects and victims.
+
+```{r}
+data_alluvial <- data %>%
+  group_by(SUSP_AGE_GROUP,
+           SUSP_RACE,
+           SUSP_SEX,
+           VIC_AGE_GROUP,
+           VIC_RACE,
+           VIC_SEX) %>%
+  summarise(count = n()) %>%
+  filter(count > 10) %>%
+  filter(SUSP_AGE_GROUP != 'UNKNOWN') %>%
+  filter(SUSP_RACE != 'UNKNOWN') %>%
+  filter(SUSP_SEX != 'UNKNOWN' &
+           SUSP_SEX != 'D' & SUSP_SEX != 'E' & SUSP_SEX != 'U') %>%
+  filter(VIC_AGE_GROUP != 'UNKNOWN') %>%
+  filter(VIC_RACE != 'UNKNOWN') %>%
+  filter(VIC_SEX != 'UNKNOWN' & VIC_SEX != 'D' & VIC_SEX != 'E' & VIC_SEX != 'U' )
+```
+
+```{r, fig.width=20, fig.height=16}
+ggplot(
+  as.data.frame(data_alluvial),
+  aes(
+    y = count,
+    axis1 = SUSP_SEX,
+    axis2 = SUSP_RACE,
+    axis3 = SUSP_AGE_GROUP,
+    axis4 = VIC_SEX,
+    axis5 = VIC_RACE,
+    axis6 = VIC_AGE_GROUP
+  )
+) +
+  scale_x_discrete(
+    limits = c(
+      "SUSP_SEX",
+      "SUSP_RACE",
+      "SUSP_AGE_GROUP",
+      "VIC_SEX",
+      "VIC_RACE",
+      "VIC_AGE_GROUP"
+    ),
+    expand = c(.1, .05)
+  ) +
+  geom_alluvium(aes(fill = VIC_SEX), width = 1 / 12) +
+  geom_stratum(width = 1 / 12,
+               fill = "grey80",
+               color = "grey20") +
+  geom_label(stat = "stratum",
+             aes(label = after_stat(stratum))) +
+  labs(y = "distribution", x = "crime category", fill='victim sex') +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle(
+    "Suspects and Victims' portraits in NYC",
+    "stratified by sex, race, and age group. (left three are suspicion and right three are victims)"
+  ) +
+  theme_void()
+
+# One problem left here is that the name of x axis cannot be shown. Also names of y axis and x axis cannot be shown...
+```
+We want to see the portrait of suspects and victims of all crimes. We pay much attention on the victim sex, as well as the other information relatex to one crime event.
+
+STOP WOMEN VIOLENCE!
+
+```{r, fig.width=20, fig.height=16}
+
+data %>%
+  group_by(OFNS_DESC, BORO_NM) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  filter(count >= 100 & !is.na(BORO_NM) & !is.na(OFNS_DESC)) %>%
+  mutate(OFNS_DESC = fct_reorder(OFNS_DESC, count)) %>%
+  ggplot() +
+  aes(x = OFNS_DESC, y = count, fill = VIC_AGE_GROUP) +
+  labs(y = "case number", x = "crime category", fill = "victim age group") + 
+  geom_bar(fill = "steelblue2", stat="identity") +
+  theme_minimal() +
+  facet_wrap(vars(BORO_NM)) +
+  coord_flip() + 
+  ggtitle(
+    "Offense Number in NYC",
+    "stratified by county, offense category, and attempted or not"
+  )
+
+```
+
+We want to see the crime number vs category between different counties.
+
+```{r, fig.width=20, fig.height=16}
+data %>%
+  filter(
+    VIC_AGE_GROUP == '<18' |
+      VIC_AGE_GROUP == '18-24' |
+      VIC_AGE_GROUP == '25-44' |
+      VIC_AGE_GROUP == '45-64' |
+      VIC_AGE_GROUP == '65+'
+  ) %>%
+  filter(!is.na(BORO_NM) & !is.na(OFNS_DESC)) %>%
+  ggplot() +
+  aes(x = OFNS_DESC, fill = VIC_AGE_GROUP) +
+  geom_bar() +
+  scale_fill_hue(direction = 1) +
+  coord_flip() +
+  theme_minimal() +
+  facet_wrap(vars(BORO_NM))
+```
+
+Originally I want to combine above two but failed to merge both two functions that one is the fill part using age group and other is the order part from the top crime number to the bottom.
+
+# ```{r}
+# reorder_size <- function(x) {
+#   factor(x, levels = names(sort(table(x))))
+# }
+# 
+# data$OFNS_DESC = unlist(data$OFNS_DESC)
+# data %>%
+#   filter(
+#     VIC_AGE_GROUP == '<18' |
+#       VIC_AGE_GROUP == '18-24' |
+#       VIC_AGE_GROUP == '25-44' |
+#       VIC_AGE_GROUP == '45-64' |
+#       VIC_AGE_GROUP == '65+'
+#   ) %>%
+#   filter(!is.na(BORO_NM) & !is.na(OFNS_DESC)) %>%
+#   ggplot() +
+#   aes(x = aes(reorder_size(OFNS_DESC)), fill = VIC_AGE_GROUP) +
+#   geom_bar() +
+#   scale_fill_hue(direction = 1) +
+#   coord_flip() +
+#   theme_minimal() +
+#   facet_wrap(vars(BORO_NM))
+# 
+# ```
+
+```{r, fig.width=20, fig.height=8}
+data %>%
+ filter(!is.na(BORO_NM)) %>%
+ filter(VIC_SEX %in% c("F", "M")) %>%
+ ggplot() +
+  aes(x = hour, fill = VIC_SEX) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(
+    F = "#F49FA6",
+    M = "#AFC9E0")
+  ) +
+  labs(
+    x = "Event happened hour",
+    y = "Case number",
+    title = "The crime daily trend in NYC",
+    subtitle = "stratified by county and sex",
+    fill = "victim sex"
+  ) +
+  theme_minimal() +
+  facet_wrap(vars(BORO_NM), scales = "free_y")
+
+```
+
+We want to see the difference and similarity of trend between counties and discern minor discrepancy.
