@@ -1,0 +1,130 @@
+# Interactive component-1
+
+### Wordcloud
+
+This wordCloud reflect desxription of the top 5 crime type
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Load d3-cloud -->
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+<!-- Initialize a select button -->
+<select id="selectButton"></select>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+<script>
+    var allGroup = ["ASSAULT 3 & RELATED OFFENSES", "CRIMINAL MISCHIEF & RELATED OF", "GRAND LARCENY",
+    "HARRASSMENT 2","PETIT LARCENY"]
+
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+     	.data(allGroup)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+   var fill = d3.scaleOrdinal(d3.schemeCategory20);
+   var margin = {top: 10, right: 10, bottom: 10, left: 10},
+        width = 450 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+    var myWords=getWords("ASSAULT 3 & RELATED OFFENSES");
+
+
+    var layout = d3.layout.cloud()
+      .size([width, height])
+      .words(myWords.map(function(d) { return {text: d.word, size:d.size}; }))
+      .padding(5)        //space between words
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .fontSize(function(d) { return d.size; })      // font size of words
+      .on("end", draw);
+
+    layout.start();
+
+    function getWords(select_group){
+      var found = null;
+      var word_freq=[{OFNS_DESC: "ASSAULT 3 & RELATED OFFENSES", con_str: [{"word": "OBSTR", "size": 26.57928032795182}, {"word": "BREATH", "size": 26.57928032795182}, {"word": "CIRCUL", "size": 26.57928032795182}, {"word": "ASSAULT", "size": 120.0}, {"word": "MENACING", "size": 39.046173051942574}, {"word": "UNCLASSIFIED", "size": 38.954231826846836}, {"word": "PEACE", "size": 20.0}, {"word": "OFFICER", "size": 20.0}]}, {"OFNS_DESC": "CRIMINAL MISCHIEF & RELATED OF", "con_str": [{"word": "MISCHIEF", "size": 117.47163787697394}, {"word": "CRIMINAL", "size": 120.0}, {"word": "OF", "size": 59.82312866997321}, {"word": "MOTOR", "size": 49.222963343024915}, {"word": "TH", "size": 40.44852060885924}, {"word": "GRAFFIT", "size": 40.44852060885924}, {"word": "UNCLASSIFIED", "size": 45.70121429793056}, {"word": "M", "size": 30.35074967219657}, {"word": "UNCL", "size": 30.57949945841172}, {"word": "ND", "size": 30.57949945841172}, {"word": "BY", "size": 21.117382133287727}, {"word": "FIRE", "size": 21.042557436862207}, {"word": "MIS", "size": 20.933527164927884}, {"word": "RECKLESS", "size": 20.232312866997322}, {"word": "ENDANGERMENT", "size": 20.232312866997322}, {"word": "PROPE", "size": 20.232312866997322}, {"word": "TAMPERING", "size": 21.577732170343765}, {"word": "FALSE", "size": 20.01567755544154}, {"word": "ALARM", "size": 20.01567755544154}, {"word": "FIR", "size": 20.090502251867054}, {"word": "EXPLOSIVE", "size": 20.0}]}, {OFNS_DESC: "GRAND LARCENY", con_str: [{"word": "LARCENY", "size": 120.0}, {"word": "GRAND", "size": 120.0}, {"word": "FROM", "size": 77.9096730986564}, {"word": "STORE", "size": 29.21853417604956}, {"word": "SHOPL", "size": 26.811770122640326}, {"word": "RESIDENCE", "size": 32.83077309447072}, {"word": "UNATTENDED", "size": 46.48445021137667}, {"word": "VEHICLE", "size": 32.76798794525135}, {"word": "MOTORCYCLE", "size": 35.85785442216734}, {"word": "PERSON", "size": 38.56598719182956}, {"word": "PICK", "size": 22.399229835502908}, {"word": "UNCL", "size": 21.583022895651084}, {"word": "OF", "size": 32.40132267381022}, {"word": "BICYCLE", "size": 24.855384872964713}, {"word": "OPEN", "size": 33.609308944790925}, {"word": "AREAS", "size": 27.283914444769998}, {"word": "BY", "size": 53.766690385500816}, {"word": "ACQUIRING", "size": 24.34389519065757}, {"word": "LOST", "size": 23.054706793353144}, {"word": "CREDIT", "size": 32.56121552048889}, {"word": "CARD", "size": 32.56121552048889}, {"word": "IDENTITY", "size": 20.773513038382653}, {"word": "THEFT", "size": 26.255075132895232}, {"word": "UNCLASSIFIED", "size": 22.4996860742539}, {"word": "DISHONEST", "size": 21.322673810221424}, {"word": "EMP", "size": 21.322673810221424}, {"word": "BAG", "size": 22.131346532166923}, {"word": "DIP", "size": 22.131346532166923}, {"word": "EATERY", "size": 22.326399062408438}, {"word": "VEHICULAR", "size": 23.08902934159307}, {"word": "ACCESSORIES", "size": 23.08902934159307}, {"word": "RETAIL", "size": 22.40592691808631}, {"word": "COMPROMISE", "size": 31.16822234314177}, {"word": "CELL", "size": 21.768029802017494}, {"word": "PHONE", "size": 21.768029802017494}, {"word": "ACCT", "size": 36.41371227658951}, {"word": "EXISTING", "size": 22.82030890293416}, {"word": "BUILDING", "size": 27.728433301243147}, {"word": "NON", "size": 26.688711230170355}, {"word": "BANK", "size": 26.759030597296054}, {"word": "REPRODUCED", "size": 22.151437779917124}, {"word": "CHECK", "size": 22.151437779917124}, {"word": "FALSE", "size": 26.35971704826085}, {"word": "PROMISE", "size": 26.35971704826085}, {"word": "IN", "size": 26.35971704826085}, {"word": "CONTACT", "size": 26.35971704826085}, {"word": "PERSONAL", "size": 23.385375245908502}, {"word": "ELECTRONIC", "size": 23.385375245908502}, {"word": "DEVICE", "size": 23.385375245908502}, {"word": "SNATCH", "size": 23.385375245908502}, {"word": "ATM", "size": 21.55372315934871}, {"word": "TRANSACTION", "size": 21.552886024025785}, {"word": "NEW", "size": 22.242685530115942}, {"word": "NOT", "size": 25.10485119919635}, {"word": "LUSH", "size": 21.32937089280482}, {"word": "WORKER", "size": 21.32937089280482}, {"word": "SLEEPING", "size": 21.32937089280482}, {"word": "UNCON", "size": 21.32937089280482}, {"word": "VICTIM", "size": 21.32937089280482}, {"word": "PURS", "size": 21.010422334770414}, {"word": "NECK", "size": 20.361642459503578}, {"word": "CHAI", "size": 20.361642459503578}, {"word": "EXTORTION", "size": 22.928299359591477}, {"word": "LOS", "size": 21.2883512619815}, {"word": "UNAUTHORIZED", "size": 20.459587292285796}, {"word": "PURCHASE", "size": 20.459587292285796}, {"word": "TELLER", "size": 20.685613829475535}, {"word": "PACKAGE", "size": 21.038884935749863}, {"word": "INSIDE", "size": 20.72077351303838}, {"word": "NIGHT", "size": 21.429827131555815}, {"word": "CLUB", "size": 21.429827131555815}, {"word": "TRUCK", "size": 20.133104516345067}, {"word": "OUTSIDE", "size": 20.317274287388557}, {"word": "BOAT", "size": 20.0301368716253}, {"word": "PIER", "size": 20.051902390021347}, {"word": "AGGRAVATED", "size": 20.0}]}, {OFNS_DESC: "HARRASSMENT 2", con_str: [{"word": "HARASSMENT", "size": 120.0}, {"word": "SUBD", "size": 120.0}, {"word": "CIVILIAN", "size": 20.0}]}, {OFNS_DESC: "PETIT LARCENY", con_str: [{"word": "LARCENY", "size": 120.0}, {"word": "PETIT", "size": 120.0}, {"word": "FROM", "size": 103.38615819319438}, {"word": "AUTO", "size": 33.71205696486984}, {"word": "BY", "size": 24.13479914177515}, {"word": "ACQUIRING", "size": 20.799602934222303}, {"word": "LOS", "size": 20.799602934222303}, {"word": "OPEN", "size": 28.340726208295393}, {"word": "AREAS", "size": 28.340726208295393}, {"word": "STORE", "size": 56.585546962016906}, {"word": "SHOPL", "size": 56.585546962016906}, {"word": "OF", "size": 32.46028365191088}, {"word": "LICENSE", "size": 24.268457110252193}, {"word": "PLATE", "size": 24.268457110252193}, {"word": "BICYCLE", "size": 24.72883455722867}, {"word": "BUILDING", "size": 44.14089582103902}, {"word": "UN", "size": 36.15854492588235}, {"word": "FALSE", "size": 21.833693532439415}, {"word": "PROMISE", "size": 21.833693532439415}, {"word": "VEHICLE", "size": 23.350828718485836}, {"word": "ACCES", "size": 23.350828718485836}, {"word": "CHECK", "size": 20.74332589486355}, {"word": "MAILB", "size": 20.353294747085513}, {"word": "UNATTENDED", "size": 27.972971388596864}, {"word": "PACKAGE", "size": 27.972971388596864}, {"word": "THEFT", "size": 27.972971388596864}, {"word": "INSIDE", "size": 25.64177319571513}, {"word": "OUTSIDE", "size": 22.321818686321944}, {"word": "CREDIT", "size": 20.57410396401396}, {"word": "CARD", "size": 20.57410396401396}, {"word": "U", "size": 20.57410396401396}, {"word": "DISHONEST", "size": 20.509229043642062}, {"word": "EMP", "size": 20.509229043642062}, {"word": "TRUCK", "size": 20.16609542866299}, {"word": "USE", "size": 20.380651641218243}, {"word": "ANIMAL", "size": 20.082070682398182}, {"word": "COIN", "size": 20.01328763429304}, {"word": "MACHIN", "size": 20.01328763429304}, {"word": "BOAT", "size": 20.0}, {"word": "PIER", "size": 20.001172438319973}]}]
+      for(var i = 0; i < word_freq.length; i++){
+        var e = word_freq[i];
+        if(e.OFNS_DESC == select_group){
+            found = e.con_str;
+        }
+      }
+      return found;
+    }
+
+    function update(select_group) {
+        var update_data=getWords(select_group);
+      // Create new data with the selection?
+      // Give these new data to update line
+      layout.stop();
+
+     layout = d3.layout.cloud()
+      .size([width, height])
+      .words(update_data.map(function(d) { return {text: d.word, size:d.size}; }))
+      .padding(5)        //space between words
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .fontSize(function(d) { return d.size; })      // font size of words
+      .on("end", draw);
+    layout.start();
+    }
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton").on("change", function(d) {
+        // recover the option that has been chosen
+        var selectedOption = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        d3.selectAll("svg").remove();
+
+     svg = d3.select("#my_dataviz").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+        update(selectedOption);
+    })
+
+
+
+
+// List of words
+// set the dimensions and margins of the graph
+
+
+// Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+// Wordcloud features that are different from one word to the other must be here
+
+// This function takes the output of 'layout' above and draw the words
+// Wordcloud features that are THE SAME from one word to the other can be here
+function draw(words) {
+  svg
+    .append("g")
+      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+      .selectAll("text")
+        .data(words)
+      .enter()
+      .append("text")
+        .style("font-size", function(d) { return d.size; })
+        .style("fill", function(d,i) { return fill(i)})
+        .attr("text-anchor", "middle")
+        .style("font-family", "Impact")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; });
+}
+</script>
+

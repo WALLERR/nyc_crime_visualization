@@ -1,3 +1,177 @@
 # Interactive component
 
+### interactive map
+This map shows total crime count for each BORO.
+<meta charset="utf-8">
+<style>
+.map-layer {
+  fill: #fff;
+  stroke: #aaa;
+}
+
+.effect-layer{
+  pointer-events:none;
+}
+
+text{
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+text.big-text{
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.effect-layer text, text.dummy-text{
+  font-size: 12px;
+}
+
+</style>
+<body>
+
+<svg></svg>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    centered;
+
+// Define color scale
+var color = d3.scale.linear()
+  .domain([1, 20])
+  .clamp(true)
+  .range(['#fff', '#409A99']);
+
+var projection = d3.geo.mercator()
+  .scale(45000)
+  // Center the Map in Colombia
+  .center([-73.935242, 40.730610])
+  .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+  .projection(projection);
+
+
+
+// Set svg width & height
+var svg = d3.select('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+var g = svg.append('g');
+
+var effectLayer = g.append('g')
+  .classed('effect-layer', true);
+
+var mapLayer = g.append('g')
+  .classed('map-layer', true);
+
+var dummyText = g.append('text')
+  .classed('dummy-text', true)
+  .attr('x', 10)
+  .attr('y', 30)
+  .style('opacity', 0);
+
+var bigText = g.append('text')
+  .classed('big-text', true)
+  .attr('x', 20)
+  .attr('y', 45);
+
+// Load map data
+d3.json('mapdata/Boroughbound.geojson', function(error, mapData) {
+  var features = mapData.features;
+
+  // Update color scale domain based on data
+  color.domain([0, d3.max(features, nameLength)]);
+
+  // Draw each province as a path
+  mapLayer.selectAll('path')
+      .data(features)
+    .enter().append('path')
+      .attr('d', path)
+      .attr('vector-effect', 'non-scaling-stroke')
+      .style('fill', fillFn)
+      .on('mouseover', mouseover)
+      .on('mouseout', mouseout)
+});
+
+// Get province name
+function nameFn(d){
+  return d && d.properties ? d.properties.boro_name : null;
+}
+
+// Get province name length
+function nameLength(d){
+  var n = nameFn(d);
+  return n ? n.length : 0;
+}
+//Get count
+function getCt(d){
+  var n = nameFn(d);
+  var counts= [{area:"Bronx",count:289577},
+{area:"Brooklyn",count:384225},
+{area:"Manhattan",count:324681},
+{area:"Queens",count:268607	},
+{area:"Staten Island",count:56177}]
+
+  var found = null;
+  for(var i = 0; i < counts.length; i++){
+    var e = counts[i];
+    if(e.area == n){
+        found = e.count;
+    }
+  }
+  return found;
+
+}
+
+// Get province color
+function fillFn(d){
+  return color(nameLength(d));
+}
+
+
+function mouseover(d){
+  // Highlight hovered province
+  d3.select(this).style('fill', 'yellow');
+
+  // Draw effects
+  var nm =nameFn(d);
+  var ct = getCt(d);
+  textArt(nm + ' crime count total(2018-2020):\n'+ct);
+}
+
+function mouseout(d){
+  // Reset province color
+  mapLayer.selectAll('path')
+    .style('fill', function(d){return centered && d===centered ? '#D5708B' : fillFn(d);});
+
+  // Remove effect text
+  effectLayer.selectAll('text').transition()
+    .style('opacity', 0)
+    .remove();
+
+  // Clear province name
+  bigText.text('');
+}
+
+function textArt(text){
+  // Use random font
+  var fontFamily = 'Arial';
+
+  bigText
+    .style('font-family', fontFamily)
+    .text(text);
+
+  // Use dummy text to compute actual width of the text
+  // getBBox() will return bounding box
+  dummyText
+    .style('font-family', fontFamily)
+    .text(text);
+
+}
+</script>
 
