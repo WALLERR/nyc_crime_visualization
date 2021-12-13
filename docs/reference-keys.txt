@@ -6,3 +6,8 @@ column-pattern
 results
 interactive-component
 conclusion
+here-are-two-shiny-widgets
+wordcloud
+interactive-map
+interactive-component-1
+wordcloud-1
