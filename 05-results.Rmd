@@ -9,6 +9,10 @@ library(ggalluvial)
 data = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 ```
 
+
+We have deeply understand that correlation does not repredent causal relationship. Actually, due to the existence of confounding bias, like Simpon's paradox, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
+
+
 ## Data Visualization about portraits of suspects and victims.
 
 ```{r}
