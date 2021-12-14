@@ -1,2 +1,23 @@
 # Conclusion
 
+We derive several conclusions that are not known to people based on the data analysis of crimes in recent years in NYC:
+
+At night, men and women are equally vulnerable to crimes.
+
+Crimes happened most at dusk time and least at dawn time.
+
+Women are victims of both women and men. STOP WOMEN VIOLENCE.
+
+
+## Limitation of this analysis
+There are two types of limitations of our analysis:
+
+We do not get related data of population age structure, and the population distribution along the five counties. We do see the number difference between ages, sex and race, but we do not know the actual proportion and cannot judge the likelihood.
+
+
+## Future directions
+
+
+## Lesson learned
+
+We found that data visualization should service our conclusions, which means that once we get a conclusion from the prior data visualization, we should be pay more attention on how to draw a graph, even simple, unattractive, to support and highlight our observation and conclusion. But unfortunately, we pay more attention on how to draw a fancy, complex and high-dimensional graph, which might include a lot of information and dimension, might be fancy. So when it comes to draw our prior conclusion, our complex, fancy graphs fail to show the difference clearly enough. And this contradicts to the rule that data visualization should service our conclusions. But one advantage might be that, complex and high-dimensional graph is space saving and do attract people to find their own insight! :)
