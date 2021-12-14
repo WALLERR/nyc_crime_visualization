@@ -215,4 +215,4 @@ Left missing variables include:
 - COMPLNT_TO_DT,
 - COMPLNT_TO_TM
 
-The latter three will not be used in our analysis. And as for the suspicion portrait, we decided to exclude them immediately since the proportion is not significant.
+They can still be used in our analysis since the proportion is small.
