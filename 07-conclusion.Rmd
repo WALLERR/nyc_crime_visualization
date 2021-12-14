@@ -8,6 +8,11 @@ Crimes happened most at dusk time and least at dawn time.
 
 Women are victims of both women and men. STOP WOMEN VIOLENCE.
 
+Actions has been made regarding harrassment and assault.
+
+Streets are the most dangerous open area where crimes take place.
+
+Apartment houses genearlly lack security less protected from theft.
 
 ## Limitation of this analysis
 There are two types of limitations of our analysis:
