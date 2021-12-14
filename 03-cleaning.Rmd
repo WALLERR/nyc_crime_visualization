@@ -1,1 +1,3 @@
 # Data transformation
+
+After some exploratory analysis and reading the description of the dataset on the website, we decide to add several of variable based on our current data. Firstly, we think there might be some interesting relationship in the crime report time frame. That is, how long between a crime happen and the person to report. We would like to explore how different crime type influence on the time gap result. So we added the date gap variable. Secondly, we split the date variable into year, month and date for easier analysis. Also, when generating the graph, we created variable such as summation of the value and average of the value in the subset.
