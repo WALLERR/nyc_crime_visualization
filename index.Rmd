@@ -1,10 +1,9 @@
 --- 
 title: "Crime Visualization in New York City"
-author: "Zihao Zhang/ Yunshu Cai/ Moya Zhu"
+author: "Zihao (Wayne) Zhang/ Yunshu Cai/ Moya Zhu"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
-
 
 # Introduction
 As a group of international students that moved to New York very recently, we've been shocked and concerned with the amount of crimes that's happening on a daily basis. Especially with the most recent tragic loss on Davide Giri, a graduate student at Columbia that was killed in a violent attack, we feel deeply sad and concerned with the New York crime situation. To understand the crimes better, we selected the crime dataset from NYPD government website Considering the large amount of data, we filtered the most recent 3 years (2018-2020) to further investigate. 

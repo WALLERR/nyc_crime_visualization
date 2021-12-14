@@ -1,11 +1,3 @@
----
-title: "05-results"
-author: Zihao (Wayne) Zhang, Yunshu Cai, Moya Zhu
-date: 12/13/2021
-output:
-  html_document: default
----
-
 # Results
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
