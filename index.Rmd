@@ -7,3 +7,13 @@ site: bookdown::bookdown_site
 
 
 # Introduction
+As a group of international students that moved to New York very recently, we've been shocked and concerned with the amount of crimes that's happening on a daily basis. Especially with the most recent tragic loss on Davide Giri, a graduate student at Columbia that was killed in a violent attack, we feel deeply sad and concerned with the New York crime situation. To understand the crimes better, we selected the crime dataset from NYPD government website Considering the large amount of data, we filtered the most recent 3 years (2018-2020) to further investigate. 
+
+The follwing question are discussed in our analysis out of our curiosity:
+1. In recent 3 years, what is the type of crime and number of crime distribution? Where are the crime most likely to take place?
+2. Is there any hidden relationship between suspect and victim profile? Does crime tends to happend in specific age/gender/race group?
+3. When does crime more likely to happen in different region - is there a tendency that more crime happens at night?
+
+In our report, we analyze the above problem with different types of graphs including bar plots line graphs, paralell coordinate charts, alluvial flow diagram etc. We utilize package such as 'dplyr'and 'ggplot' in R in creating our plots. We also use D3 to create the interactive component in order to present a more visually powerful result.
+
+This is a interactive map that contains the total number of crime in NYC in each borough region from 2018-2020. We collect the borough boundaries data from NYC open data website. When hover the mouse to the region, the page will show the number of crime counts in that region.
