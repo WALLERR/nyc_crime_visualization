@@ -7,7 +7,8 @@ library(cowplot)
 library(ggplot2)
 library(ggalluvial)
 library(base)
-data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+library(parcoords)
+data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 ```
 
 
@@ -148,30 +149,29 @@ Originally I want to combine above two but failed to merge both two functions th
 # 
 # ```
 
-# ```{r, fig.width=20, fig.height=8}
-# data %>%
-#  filter(!is.na(BORO_NM)) %>%
-#  filter(VIC_SEX %in% c("F", "M")) %>%
-#  ggplot() +
-#   aes(x = hour, fill = VIC_SEX) +
-#   geom_bar() +
-#   scale_fill_manual(
-#     values = c(
-#     F = "#F49FA6",
-#     M = "#AFC9E0")
-#   ) +
-#   labs(
-#     x = "Event happened hour",
-#     y = "Case number",
-#     title = "The crime daily trend in NYC",
-#     subtitle = "stratified by county and sex",
-#     fill = "victim sex"
-#   ) +
-#   theme_minimal() +
-#   facet_wrap(vars(BORO_NM), scales = "free_y")
-# 
-# ```
-
+```{r, fig.width=20, fig.height=8}
+data %>%
+ mutate(hour=sapply(strsplit(CMPLNT_FR_TM, ':'), function(x) as.numeric(x[[1]][1]))) %>%
+ filter(!is.na(BORO_NM)) %>%
+ filter(VIC_SEX %in% c("F", "M")) %>%
+ ggplot() +
+  aes(x = hour, fill = VIC_SEX) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(
+    F = "#F49FA6",
+    M = "#AFC9E0")
+  ) +
+  labs(
+    x = "Event happened hour",
+    y = "Case number",
+    title = "The crime daily trend in NYC",
+    subtitle = "stratified by county and sex",
+    fill = "victim sex"
+  ) +
+  theme_minimal() +
+  facet_wrap(vars(BORO_NM), scales = "free_y")
+```
 We want to see the difference and similarity of trend between counties and discern minor discrepancy.
 
 
