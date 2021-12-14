@@ -4,6 +4,9 @@ data-transformation
 missing-values
 column-pattern
 results
+crime-number-vs-category-of-crimes-among-different-specific-locations.
+trend-of-number-of-crimes-over-years
+parallel-coordinates-chart-on-crime-types-and-locations
 visualization-about-portraits-of-suspects-and-victims.
 visualization-about-daily-crime-trend.
 interactive-component
