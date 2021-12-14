@@ -22,7 +22,7 @@ data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_202
 ```
 
 
-We have deeply understand that correlation does not repredent causal relationship. Actually, due to the existence of confounding bias, like Simpon's paradox, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
+We have deeply understand that correlation does not represent causal relationship. Actually, due to the existence of confounding bias and selection bias, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
 
 
 
@@ -222,7 +222,7 @@ df_date_vs_type = df %>%
 df_date_vs_type
 ```
 
-## Data Visualization about portraits of suspects and victims.
+## Visualization about portraits of suspects and victims.
 
 ```{r}
 data_alluvial <- data %>%
@@ -258,12 +258,12 @@ ggplot(
 ) +
   scale_x_discrete(
     limits = c(
-      "SUSP_SEX",
-      "SUSP_RACE",
-      "SUSP_AGE_GROUP",
-      "VIC_SEX",
-      "VIC_RACE",
-      "VIC_AGE_GROUP"
+      "suspect sex",
+      "suspect race",
+      "suspect age group",
+      "victim sex",
+      "victim race",
+      "victim age group"
     ),
     expand = c(.1, .05)
   ) +
@@ -273,14 +273,54 @@ ggplot(
                color = "grey20") +
   geom_label(stat = "stratum",
              aes(label = after_stat(stratum))) +
-  labs(y = "distribution", x = "crime category", fill='victim sex') +
+  labs(y = "distribution", x = "crime category", fill = 'victim sex') +
   scale_fill_brewer(type = "qual", palette = "Set1") +
   ggtitle(
     "Suspects and Victims' portraits in NYC",
-    "stratified by sex, race, and age group. (left three are suspicion and right three are victims)"
+    "stratified by sex, race, and age group. (left three are suspects and right three are victims)"
   ) +
-  theme_void()
+  theme(
+    title = element_text(size = 25),
+    axis.title.x = element_text(size = 20),
+    axis.title.y = element_text(size = 20)
+  )
+```
+We want to see the portrait of suspects and victims of all crimes in recent three years. By an alluvium, we focus on the victim sex, denoted by different colors, as well as the other information related to one crime event. 
+From the graph above, we can have a direct understanding that crimes in NYC happen on women more than men and as for the suspect number, the number of male suspect is 3 times as women. In addition, it is not hard to see that in male and female suspects, their targets both focus more on women. Certainly there is no gender opposition in crimes, but we do see women is always the vulnerable group.
 
-We want to see the portrait of suspects and victims of all crimes. We pay much attention on the victim sex, as well as the other information relatex to one crime event.
+STOP WOMEN VIOLENCE! More help and guard shoule be paid on women.
 
-STOP WOMEN VIOLENCE!
+We have understood that there is a specific age structure in the whole population and we do not gather related information, but we do see that in NYC, compared between victim and suspects, old people aged from 45 to 64 is more vulnerable. 
+
+## Visualization about daily crime trend.
+
+```{r, fig.width=20, fig.height=8}
+data %>%
+ mutate(hour=sapply(strsplit(CMPLNT_FR_TM, ':'), function(x) as.numeric(x[[1]][1]))) %>%
+ filter(!is.na(BORO_NM)) %>%
+ filter(VIC_SEX %in% c("F", "M")) %>%
+ ggplot() +
+  aes(x = hour, fill = VIC_SEX) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(
+    F = "#F49FA6",
+    M = "#AFC9E0")
+  ) +
+  labs(
+    x = "Event happened hour",
+    y = "Case number",
+    title = "The crime daily trend in NYC",
+    subtitle = "stratified by county and sex",
+    fill = "victim sex"
+  ) +
+  theme(
+    title = element_text(size = 25),
+    axis.title.x = element_text(size = 20),
+    axis.title.y = element_text(size = 20)
+  ) + 
+  facet_wrap(vars(BORO_NM), scales = "free_y")
+```  
+
+In this graph, we see the daily trend of crime number in five counties. The y axis is the crime number, the x axis is the hour in a day. The fill part is the victim sex. Since the population and areas of five counties are unknown, we free the y axis and only focus on the daily trend. And we do find a very similar trend in these five counties. The daily valley appears at 5-7 o'clock while the daily peak appeas at 15-19 o'clock. (We exclude the 12 o'clock peak since we regard it as the auto fill of missing value and it does not meet the daily trend) Besides, we add victim sex in the graph to show more solicitude for sex discrepancy. Unfortunately, we see that in all these five counties, in daily time, women are more vulnerable than men. However, at night, from appr. 22 o'clock to 5 o'clock, men are as much vulnerable as women. In staten island this conclusion is not obvious while in other four counties, the crime numbers of men and women are nearly the same.
+
