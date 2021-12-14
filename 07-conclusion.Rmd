@@ -16,7 +16,7 @@ We do not get related data of population age structure, and the population distr
 
 
 ## Future directions
-
+For future directions, more work should be done in order to make sure that each graph is produced aiming at a specific target problem or issue. Due to the limited project time frame, combinatorial graphs were made so that more of the data can be visualized and displayed to the largest amount. In real life, more specific graphs with certain target problems and issues should be produced aiming at more detailed and practical solutions instead of stopping at visualization and analysis, with more types of graphs being learned and applied to indeed bring effective and efficient solutions to the world.
 
 ## Lesson learned
 
