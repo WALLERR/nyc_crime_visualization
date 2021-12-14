@@ -66,6 +66,16 @@ Placeholder
 
 <!--chapter:end:04-missing.Rmd-->
 
+<<<<<<< HEAD
+=======
+---
+title: "05-results"
+author: Zihao (Wayne) Zhang, Yunshu Cai, Moya Zhu
+date: 12/13/2021
+output:
+  html_document: default
+---
+>>>>>>> b84d14ea83f8609b4cc19d1b4b1e2fe7393648ee
 ```{r include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
@@ -73,6 +83,10 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> b84d14ea83f8609b4cc19d1b4b1e2fe7393648ee
 # Results
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -83,7 +97,11 @@ library(ggplot2)
 library(ggalluvial)
 library(base)
 library(parcoords)
+<<<<<<< HEAD
 data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+=======
+data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+>>>>>>> b84d14ea83f8609b4cc19d1b4b1e2fe7393648ee
 ```
 
 
@@ -359,6 +377,18 @@ df_loc_vs_type_cleaned %>%
   parcoords(color = list(colorBy = 'Region', colorScale = "scaleOrdinal", colorScheme = 'schemeCategory10'), brushMode = '1D-axes', reorderable = T, queue = T, withD3 = T, rownames = F, height = 750, width = 1200)
 ```
 
+<<<<<<< HEAD
+=======
+The above parallel coordinates chart displays the number of crime incidences of the top 20 crime types, grouped by specific locations each crime incidence took place and the borough where each incident occurred.
+
+It can be seen that among the four boroughs of New York City, Staten Island has the least incidences of crimes in general, with the most occurred type of incidents being {\em intoxicated & impaired driving}.
+Queens also has relatively low crime incidences. The most occurred incidences are {\em grand larceny of motor vehicle}.
+Starting from Manhattan, the number of crime incidents starts to increase. Apartment houses are the No.1 places for crimes such as {\em theft-fraud} and {\em grand larceny} to happen. {\em Grand larceny} also takes place in Manhattan streets.
+Brooklyn and Bronx both have very high crime rates and almost peak out at the number of almost evrey type of crimes, wth most of them taking places in the {\em streets} and apartment {\em houses}.
+
+For most of the specific locations that a crime can take place at, the number of each type of crime is consistent with other types for most of the cases, that is, a specific location has either a generally very low (or moderate) crime rate or a generally high crime rate. For instacne, public schools, hospitals, hotels, and fast food shops all have overall very low crime rate; on the other hand, places like streets and apartment houses have the highest overall crime rate. However, there is one exception: chain stores have relative small number of crimes under all the crime categories but a very high number of crime instances under category {\em petite larceny}.
+ 
+>>>>>>> b84d14ea83f8609b4cc19d1b4b1e2fe7393648ee
 
 # Date of Occurance (CMPLNT_FR_DT) & Data of Reporting to Police (RPT_DT) vs Crime Types (OFNS_DESC)
 ```{r}
@@ -384,6 +414,10 @@ df_date_vs_type = df %>%
 df_date_vs_type
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b84d14ea83f8609b4cc19d1b4b1e2fe7393648ee
 <!--chapter:end:05-results.Rmd-->
 
 
