@@ -1,6 +1,6 @@
 # Interactive component-1
 
-### Wordcloud
+## Wordcloud
 
 This wordCloud graph reflect description of the top 5 crime types. The crime type can be selected via the dropdown box. Each wordCloud chart is build by selected all the crime description for that crime type, filtered out numbers and character, split into individual words and calculate the frequency of the word in the entire words collection. The word with higher frequency will be marked larger in the graph. This plot is aim to check if we are able to identify the crime type based on the graph. We can observe that the wordCloud graph shows the typical description of a crime type.
 

@@ -1,6 +1,6 @@
 # Interactive component
 
-### interactive map
+## interactive map
 This is a interactive map that contains the total number of crime in NYC in each borough region from 2018-2020. We collect the borough boundaries data from NYC open data website. When hover the mouse to the region, the page will show the number of crime counts in that region.
 
 <meta charset="utf-8">

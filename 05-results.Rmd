@@ -16,19 +16,13 @@ library(ggplot2)
 library(ggalluvial)
 library(base)
 library(parcoords)
-#data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 
-data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
+# data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 ```
 
 
 We have deeply understand that correlation does not represent causal relationship. Actually, due to the existence of confounding bias and selection bias, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
-
-
-
-
-
-We want to see the crime number vs category between different specific locations.
 
 ```{r, fig.width=20, fig.height=16}
 data %>%

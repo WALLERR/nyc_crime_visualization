@@ -4,11 +4,6 @@ data-transformation
 missing-values
 column-pattern
 results
-crime-categories-ofns_desc
-borough-location
-crime-type-year
-location-prem_typ_desc-boro_nm-vs-type-ofns_desc
-date-of-occurance-cmplnt_fr_dt-data-of-reporting-to-police-rpt_dt-vs-crime-types-ofns_desc
 visualization-about-portraits-of-suspects-and-victims.
 visualization-about-daily-crime-trend.
 interactive-component
