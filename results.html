@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Results | Crime Visualization in New York City</title>
+  <meta name="description" content="Chapter 5 Results | Crime Visualization in New York City" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Results | Crime Visualization in New York City" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Results | Crime Visualization in New York City" />
+  
+  
+  
+
+<meta name="author" content="Zihao Zhang/ Yunshu Cai/ Moya Zhu" />
+
+
+<meta name="date" content="2021-12-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="missing-values.html"/>
+<link rel="next" href="r-reorder_size---functionx-factorx-levels-namessorttablex-dataofns_desc-unlistdataofns_desc-data-filter-vic_age_group-18-vic_age_group-18-24-vic_age_group-25-44-vic_age_group-45-64-vic_age_group-65-filteris.naboro_nm-is.naofns_desc-ggplot-aesx-aesreorder_sizeofns_desc-fill-vic_age_group-geom_bar-scale_fill_huedirection-1-coord_flip-theme_minimal-facet_wrapvarsboro_nm.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/parallel-coordinates-2.1.8/parcoords.css" rel="stylesheet" />
+<script src="libs/parcoords-binding-1.0.0/parcoords.js"></script>
+<script src="libs/d3-5.16.0/d3.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Crime visualization</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
+<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a><ul>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#column-pattern"><i class="fa fa-check"></i><b>4.1</b> Column pattern</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a><ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#data-visualization-about-portraits-of-suspects-and-victims."><i class="fa fa-check"></i><b>5.1</b> Data Visualization about portraits of suspects and victims.</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="r-reorder_size---functionx-factorx-levels-namessorttablex-dataofns_desc-unlistdataofns_desc-data-filter-vic_age_group-18-vic_age_group-18-24-vic_age_group-25-44-vic_age_group-45-64-vic_age_group-65-filteris.naboro_nm-is.naofns_desc-ggplot-aesx-aesreorder_sizeofns_desc-fill-vic_age_group-geom_bar-scale_fill_huedirection-1-coord_flip-theme_minimal-facet_wrapvarsboro_nm.html"><a href="r-reorder_size---functionx-factorx-levels-namessorttablex-dataofns_desc-unlistdataofns_desc-data-filter-vic_age_group-18-vic_age_group-18-24-vic_age_group-25-44-vic_age_group-45-64-vic_age_group-65-filteris.naboro_nm-is.naofns_desc-ggplot-aesx-aesreorder_sizeofns_desc-fill-vic_age_group-geom_bar-scale_fill_huedirection-1-coord_flip-theme_minimal-facet_wrapvarsboro_nm.html"><i class="fa fa-check"></i><b>6</b> <code>{r} # reorder_size &lt;- function(x) { #   factor(x, levels = names(sort(table(x)))) # } #  # data$OFNS_DESC = unlist(data$OFNS_DESC) # data %&gt;% #   filter( #     VIC_AGE_GROUP == '&lt;18' | #       VIC_AGE_GROUP == '18-24' | #       VIC_AGE_GROUP == '25-44' | #       VIC_AGE_GROUP == '45-64' | #       VIC_AGE_GROUP == '65+' #   ) %&gt;% #   filter(!is.na(BORO_NM) &amp; !is.na(OFNS_DESC)) %&gt;% #   ggplot() + #   aes(x = aes(reorder_size(OFNS_DESC)), fill = VIC_AGE_GROUP) + #   geom_bar() + #   scale_fill_hue(direction = 1) + #   coord_flip() + #   theme_minimal() + #   facet_wrap(vars(BORO_NM)) #  #</code></a></li>
+<li class="chapter" data-level="7" data-path="r-fig.width20-fig.height8-data-filteris.naboro_nm-filtervic_sex-in-cf-m-ggplot-aesx-hour-fill-vic_sex-geom_bar-scale_fill_manual-values-c-f-f49fa6-m-afc9e0-labs-x-event-happened-hour-y-case-number-title-the-crime-daily-trend-in-nyc-subtitle-stratified-by-county-and-sex-fill-victim-sex-theme_minimal-facet_wrapvarsboro_nm-scales-free_y.html"><a href="r-fig.width20-fig.height8-data-filteris.naboro_nm-filtervic_sex-in-cf-m-ggplot-aesx-hour-fill-vic_sex-geom_bar-scale_fill_manual-values-c-f-f49fa6-m-afc9e0-labs-x-event-happened-hour-y-case-number-title-the-crime-daily-trend-in-nyc-subtitle-stratified-by-county-and-sex-fill-victim-sex-theme_minimal-facet_wrapvarsboro_nm-scales-free_y.html"><i class="fa fa-check"></i><b>7</b> <code>{r, fig.width=20, fig.height=8} # data %&gt;% #  filter(!is.na(BORO_NM)) %&gt;% #  filter(VIC_SEX %in% c(&quot;F&quot;, &quot;M&quot;)) %&gt;% #  ggplot() + #   aes(x = hour, fill = VIC_SEX) + #   geom_bar() + #   scale_fill_manual( #     values = c( #     F = &quot;#F49FA6&quot;, #     M = &quot;#AFC9E0&quot;) #   ) + #   labs( #     x = &quot;Event happened hour&quot;, #     y = &quot;Case number&quot;, #     title = &quot;The crime daily trend in NYC&quot;, #     subtitle = &quot;stratified by county and sex&quot;, #     fill = &quot;victim sex&quot; #   ) + #   theme_minimal() + #   facet_wrap(vars(BORO_NM), scales = &quot;free_y&quot;) #  #</code></a></li>
+<li class="chapter" data-level="8" data-path="crime-categories-ofns_desc.html"><a href="crime-categories-ofns_desc.html"><i class="fa fa-check"></i><b>8</b> Crime categories (OFNS_DESC)</a></li>
+<li class="chapter" data-level="9" data-path="borough-location.html"><a href="borough-location.html"><i class="fa fa-check"></i><b>9</b> Borough &amp; Location</a></li>
+<li class="chapter" data-level="10" data-path="crime-type-year.html"><a href="crime-type-year.html"><i class="fa fa-check"></i><b>10</b> Crime type ~ Year</a></li>
+<li class="chapter" data-level="11" data-path="location-prem_typ_desc-boro_nm-vs-type-ofns_desc.html"><a href="location-prem_typ_desc-boro_nm-vs-type-ofns_desc.html"><i class="fa fa-check"></i><b>11</b> Location (PREM_TYP_DESC, BORO_NM) vs type (OFNS_DESC)</a></li>
+<li class="chapter" data-level="12" data-path="date-of-occurance-cmplnt_fr_dt-data-of-reporting-to-police-rpt_dt-vs-crime-types-ofns_desc.html"><a href="date-of-occurance-cmplnt_fr_dt-data-of-reporting-to-police-rpt_dt-vs-crime-types-ofns_desc.html"><i class="fa fa-check"></i><b>12</b> Date of Occurance (CMPLNT_FR_DT) &amp; Data of Reporting to Police (RPT_DT) vs Crime Types (OFNS_DESC)</a></li>
+<li class="chapter" data-level="13" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>13</b> Interactive component</a><ul>
+<li class="chapter" data-level="13.0.1" data-path="interactive-component.html"><a href="interactive-component.html#interactive-map"><i class="fa fa-check"></i><b>13.0.1</b> interactive map</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="interactive-component-1.html"><a href="interactive-component-1.html"><i class="fa fa-check"></i><b>14</b> Interactive component-1</a><ul>
+<li class="chapter" data-level="14.0.1" data-path="interactive-component-1.html"><a href="interactive-component-1.html#wordcloud"><i class="fa fa-check"></i><b>14.0.1</b> Wordcloud</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>15</b> Conclusion</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Crime Visualization in New York City</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="results" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Results</h1>
+<p>We have deeply understand that correlation does not repredent causal relationship. Actually, due to the existence of confounding bias, like Simpon’s paradox, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.</p>
+<div id="data-visualization-about-portraits-of-suspects-and-victims." class="section level2">
+<h2><span class="header-section-number">5.1</span> Data Visualization about portraits of suspects and victims.</h2>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-1.png" width="1920" />
+We want to see the portrait of suspects and victims of all crimes. We pay much attention on the victim sex, as well as the other information relatex to one crime event.</p>
+<p>STOP WOMEN VIOLENCE!</p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-7-1.png" width="1920" /></p>
+<p>We want to see the crime number vs category between different counties.</p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-8-1.png" width="1920" /></p>
+<p>Originally I want to combine above two but failed to merge both two functions that one is the fill part using age group and other is the order part from the top crime number to the bottom.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="missing-values.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="r-reorder_size---functionx-factorx-levels-namessorttablex-dataofns_desc-unlistdataofns_desc-data-filter-vic_age_group-18-vic_age_group-18-24-vic_age_group-25-44-vic_age_group-45-64-vic_age_group-65-filteris.naboro_nm-is.naofns_desc-ggplot-aesx-aesreorder_sizeofns_desc-fill-vic_age_group-geom_bar-scale_fill_huedirection-1-coord_flip-theme_minimal-facet_wrapvarsboro_nm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/WALLERR/nyc_crime_visualization/edit/main/05-results.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/WALLERR/nyc_crime_visualization/blob/main/05-results.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -1,3 +1,11 @@
+---
+title: "05-results"
+author: Zihao (Wayne) Zhang, Yunshu Cai, Moya Zhu
+date: 12/13/2021
+output:
+  html_document: default
+---
+
 # Results
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -7,6 +15,7 @@ library(cowplot)
 library(ggplot2)
 library(ggalluvial)
 library(base)
+library(parcoords)
 data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c("","NA"))
 ```
 
@@ -14,91 +23,8 @@ data = df = read.csv('NYPD_Complaint_Data_Historic_2018_2020.csv', na.strings=c(
 We have deeply understand that correlation does not repredent causal relationship. Actually, due to the existence of confounding bias, like Simpon's paradox, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
 
 
-## Data Visualization about portraits of suspects and victims.
 
-```{r}
-data_alluvial <- data %>%
-  group_by(SUSP_AGE_GROUP,
-           SUSP_RACE,
-           SUSP_SEX,
-           VIC_AGE_GROUP,
-           VIC_RACE,
-           VIC_SEX) %>%
-  summarise(count = n()) %>%
-  filter(count > 10) %>%
-  filter(SUSP_AGE_GROUP != 'UNKNOWN') %>%
-  filter(SUSP_RACE != 'UNKNOWN') %>%
-  filter(SUSP_SEX != 'UNKNOWN' &
-           SUSP_SEX != 'D' & SUSP_SEX != 'E' & SUSP_SEX != 'U') %>%
-  filter(VIC_AGE_GROUP != 'UNKNOWN') %>%
-  filter(VIC_RACE != 'UNKNOWN') %>%
-  filter(VIC_SEX != 'UNKNOWN' & VIC_SEX != 'D' & VIC_SEX != 'E' & VIC_SEX != 'U' )
-```
 
-```{r, fig.width=20, fig.height=16}
-ggplot(
-  as.data.frame(data_alluvial),
-  aes(
-    y = count,
-    axis1 = SUSP_SEX,
-    axis2 = SUSP_RACE,
-    axis3 = SUSP_AGE_GROUP,
-    axis4 = VIC_SEX,
-    axis5 = VIC_RACE,
-    axis6 = VIC_AGE_GROUP
-  )
-) +
-  scale_x_discrete(
-    limits = c(
-      "SUSP_SEX",
-      "SUSP_RACE",
-      "SUSP_AGE_GROUP",
-      "VIC_SEX",
-      "VIC_RACE",
-      "VIC_AGE_GROUP"
-    ),
-    expand = c(.1, .05)
-  ) +
-  geom_alluvium(aes(fill = VIC_SEX), width = 1 / 12) +
-  geom_stratum(width = 1 / 12,
-               fill = "grey80",
-               color = "grey20") +
-  geom_label(stat = "stratum",
-             aes(label = after_stat(stratum))) +
-  labs(y = "distribution", x = "crime category", fill='victim sex') +
-  scale_fill_brewer(type = "qual", palette = "Set1") +
-  ggtitle(
-    "Suspects and Victims' portraits in NYC",
-    "stratified by sex, race, and age group. (left three are suspicion and right three are victims)"
-  ) +
-  theme_void()
-
-# One problem left here is that the name of x axis cannot be shown. Also names of y axis and x axis cannot be shown...
-```
-We want to see the portrait of suspects and victims of all crimes. We pay much attention on the victim sex, as well as the other information relatex to one crime event.
-
-STOP WOMEN VIOLENCE!
-
-```{r, fig.width=20, fig.height=16}
-
-data %>%
-  group_by(OFNS_DESC, BORO_NM) %>%
-  summarise(count = n(), .groups = 'drop') %>%
-  filter(count >= 100 & !is.na(BORO_NM) & !is.na(OFNS_DESC)) %>%
-  mutate(OFNS_DESC = fct_reorder(OFNS_DESC, count)) %>%
-  ggplot() +
-  aes(x = OFNS_DESC, y = count, fill = VIC_AGE_GROUP) +
-  labs(y = "case number", x = "crime category", fill = "victim age group") + 
-  geom_bar(fill = "steelblue2", stat="identity") +
-  theme_minimal() +
-  facet_wrap(vars(BORO_NM)) +
-  coord_flip() + 
-  ggtitle(
-    "Offense Number in NYC",
-    "stratified by county, offense category, and attempted or not"
-  )
-
-```
 
 We want to see the crime number vs category between different counties.
 
@@ -123,54 +49,7 @@ data %>%
 
 Originally I want to combine above two but failed to merge both two functions that one is the fill part using age group and other is the order part from the top crime number to the bottom.
 
-# ```{r}
-# reorder_size <- function(x) {
-#   factor(x, levels = names(sort(table(x))))
-# }
-# 
-# data$OFNS_DESC = unlist(data$OFNS_DESC)
-# data %>%
-#   filter(
-#     VIC_AGE_GROUP == '<18' |
-#       VIC_AGE_GROUP == '18-24' |
-#       VIC_AGE_GROUP == '25-44' |
-#       VIC_AGE_GROUP == '45-64' |
-#       VIC_AGE_GROUP == '65+'
-#   ) %>%
-#   filter(!is.na(BORO_NM) & !is.na(OFNS_DESC)) %>%
-#   ggplot() +
-#   aes(x = aes(reorder_size(OFNS_DESC)), fill = VIC_AGE_GROUP) +
-#   geom_bar() +
-#   scale_fill_hue(direction = 1) +
-#   coord_flip() +
-#   theme_minimal() +
-#   facet_wrap(vars(BORO_NM))
-# 
-# ```
 
-# ```{r, fig.width=20, fig.height=8}
-# data %>%
-#  filter(!is.na(BORO_NM)) %>%
-#  filter(VIC_SEX %in% c("F", "M")) %>%
-#  ggplot() +
-#   aes(x = hour, fill = VIC_SEX) +
-#   geom_bar() +
-#   scale_fill_manual(
-#     values = c(
-#     F = "#F49FA6",
-#     M = "#AFC9E0")
-#   ) +
-#   labs(
-#     x = "Event happened hour",
-#     y = "Case number",
-#     title = "The crime daily trend in NYC",
-#     subtitle = "stratified by county and sex",
-#     fill = "victim sex"
-#   ) +
-#   theme_minimal() +
-#   facet_wrap(vars(BORO_NM), scales = "free_y")
-# 
-# ```
 
 We want to see the difference and similarity of trend between counties and discern minor discrepancy.
 
@@ -273,7 +152,7 @@ df_loc_vs_type = df %>%
 crimetypes_to_look <- c(df_groupby_OFNS_DESC_percent$OFNS_DESC)
 locations_to_look <- c(df_groupby_location_percent$PREM_TYP_DESC)
 
-df_loc_vs_type_cleaned <- aggregate(cbind(`PETIT LARCENY`=df_loc_vs_type$`PETIT LARCENY`, `HARRASSMENT 2`=df_loc_vs_type$`HARRASSMENT 2`, `ASSAULT 3 & RELATED OFFENSES`=df_loc_vs_type$`ASSAULT 3 & RELATED OFFENSES`, `CRIMINAL MISCHIEF & RELATED OF`=df_loc_vs_type$`CRIMINAL MISCHIEF & RELATED OF`, `GRAND LARCENY`=df_loc_vs_type$`GRAND LARCENY`, `FELONY ASSAULT`=df_loc_vs_type$`FELONY ASSAULT`, `OFF. AGNST PUB ORD SENSBLTY &`=df_loc_vs_type$`OFF. AGNST PUB ORD SENSBLTY &`, `MISCELLANEOUS PENAL LAW`=df_loc_vs_type$`MISCELLANEOUS PENAL LAW`, `ROBBERY`=df_loc_vs_type$`ROBBERY`, `BURGLARY`=df_loc_vs_type$`BURGLARY`, `DANGEROUS DRUGS`=df_loc_vs_type$`DANGEROUS DRUGS`, `OFFENSES AGAINST PUBLIC ADMINI`=df_loc_vs_type$`OFFENSES AGAINST PUBLIC ADMINI`, `GRAND LARCENY OF MOTOR VEHICLE`=df_loc_vs_type$`GRAND LARCENY OF MOTOR VEHICLE`, `VEHICLE AND TRAFFIC LAWS`=df_loc_vs_type$`VEHICLE AND TRAFFIC LAWS`, `DANGEROUS WEAPONS`=df_loc_vs_type$`DANGEROUS WEAPONS`, `SEX CRIMES`=df_loc_vs_type$`SEX CRIMES`, `FORGERY`=df_loc_vs_type$`FORGERY`, `INTOXICATED & IMPAIRED DRIVING`=df_loc_vs_type$`INTOXICATED & IMPAIRED DRIVING`, `THEFT-FRAUD`=df_loc_vs_type$`THEFT-FRAUD`, `CRIMINAL TRESPASS`=df_loc_vs_type$`CRIMINAL TRESPASS`), by=list('Location'=df_loc_vs_type$PREM_TYP_DESC, 'Region'=df_loc_vs_type$BORO_NM), FUN=sum)
+df_loc_vs_type_cleaned <- aggregate(cbind(`PetitLarc`=df_loc_vs_type$`PETIT LARCENY`, `harrass`=df_loc_vs_type$`HARRASSMENT 2`, `assult`=df_loc_vs_type$`ASSAULT 3 & RELATED OFFENSES`, `mischief`=df_loc_vs_type$`CRIMINAL MISCHIEF & RELATED OF`, `GrandLarc`=df_loc_vs_type$`GRAND LARCENY`, `FelonyAssult`=df_loc_vs_type$`FELONY ASSAULT`, `disorder`=df_loc_vs_type$`OFF. AGNST PUB ORD SENSBLTY &`, `PenalLaw`=df_loc_vs_type$`MISCELLANEOUS PENAL LAW`, `robbery`=df_loc_vs_type$`ROBBERY`, `burglary`=df_loc_vs_type$`BURGLARY`, `GrandLarcVehic`=df_loc_vs_type$`GRAND LARCENY OF MOTOR VEHICLE`, `drug`=df_loc_vs_type$`DANGEROUS DRUGS`, `AgainstAdmin`=df_loc_vs_type$`OFFENSES AGAINST PUBLIC ADMINI`, `traffic`=df_loc_vs_type$`VEHICLE AND TRAFFIC LAWS`, `weapon`=df_loc_vs_type$`DANGEROUS WEAPONS`, `SexCrime`=df_loc_vs_type$`SEX CRIMES`, `forgery`=df_loc_vs_type$`FORGERY`, `driving`=df_loc_vs_type$`INTOXICATED & IMPAIRED DRIVING`, `TheftFraud`=df_loc_vs_type$`THEFT-FRAUD`, `trespass`=df_loc_vs_type$`CRIMINAL TRESPASS`), by=list('Location'=df_loc_vs_type$PREM_TYP_DESC, 'Region'=df_loc_vs_type$BORO_NM), FUN=sum)
 
 df_loc_vs_type_cleaned <- subset(df_loc_vs_type_cleaned, (Location == locations_to_look[1] | Location == locations_to_look[2] | Location == locations_to_look[3] | Location == locations_to_look[4] | Location == locations_to_look[5] | Location == locations_to_look[6] | Location == locations_to_look[7] | Location == locations_to_look[8] | Location == locations_to_look[9] | Location == locations_to_look[10] | Location == locations_to_look[11] | Location == locations_to_look[12] | Location == locations_to_look[13] | Location == locations_to_look[14] | Location == locations_to_look[15] | Location == locations_to_look[16] | Location == locations_to_look[17] | Location == locations_to_look[18] | Location == locations_to_look[19] | Location == locations_to_look[20]) & (Region != 0))
 
@@ -283,6 +162,15 @@ df_loc_vs_type_cleaned %>%
   parcoords(color = list(colorBy = 'Region', colorScale = "scaleOrdinal", colorScheme = 'schemeCategory10'), brushMode = '1D-axes', reorderable = T, queue = T, withD3 = T, rownames = F, height = 750, width = 1200)
 ```
 
+The above parallel coordinates chart displays the number of crime incidences of the top 20 crime types, grouped by specific locations each crime incidence took place and the borough where each incident occurred.
+
+It can be seen that among the four boroughs of New York City, Staten Island has the least incidences of crimes in general, with the most occurred type of incidents being {\em intoxicated & impaired driving}.
+Queens also has relatively low crime incidences. The most occurred incidences are {\em grand larceny of motor vehicle}.
+Starting from Manhattan, the number of crime incidents starts to increase. Apartment houses are the No.1 places for crimes such as {\em theft-fraud} and {\em grand larceny} to happen. {\em Grand larceny} also takes place in Manhattan streets.
+Brooklyn and Bronx both have very high crime rates and almost peak out at the number of almost evrey type of crimes, wth most of them taking places in the {\em streets} and apartment {\em houses}.
+
+For most of the specific locations that a crime can take place at, the number of each type of crime is consistent with other types for most of the cases, that is, a specific location has either a generally very low (or moderate) crime rate or a generally high crime rate. For instacne, public schools, hospitals, hotels, and fast food shops all have overall very low crime rate; on the other hand, places like streets and apartment houses have the highest overall crime rate. However, there is one exception: chain stores have relative small number of crimes under all the crime categories but a very high number of crime instances under category {\em petite larceny}.
+ 
 
 # Date of Occurance (CMPLNT_FR_DT) & Data of Reporting to Police (RPT_DT) vs Crime Types (OFNS_DESC)
 ```{r}
@@ -307,3 +195,68 @@ df_date_vs_type = df %>%
 
 df_date_vs_type
 ```
+
+## Data Visualization about portraits of suspects and victims.
+
+```{r}
+data_alluvial <- data %>%
+  group_by(SUSP_AGE_GROUP,
+           SUSP_RACE,
+           SUSP_SEX,
+           VIC_AGE_GROUP,
+           VIC_RACE,
+           VIC_SEX) %>%
+  summarise(count = n()) %>%
+  filter(count > 10) %>%
+  filter(SUSP_AGE_GROUP != 'UNKNOWN') %>%
+  filter(SUSP_RACE != 'UNKNOWN') %>%
+  filter(SUSP_SEX != 'UNKNOWN' &
+           SUSP_SEX != 'D' & SUSP_SEX != 'E' & SUSP_SEX != 'U') %>%
+  filter(VIC_AGE_GROUP != 'UNKNOWN') %>%
+  filter(VIC_RACE != 'UNKNOWN') %>%
+  filter(VIC_SEX != 'UNKNOWN' & VIC_SEX != 'D' & VIC_SEX != 'E' & VIC_SEX != 'U' )
+```
+
+```{r, fig.width=20, fig.height=16}
+ggplot(
+  as.data.frame(data_alluvial),
+  aes(
+    y = count,
+    axis1 = SUSP_SEX,
+    axis2 = SUSP_RACE,
+    axis3 = SUSP_AGE_GROUP,
+    axis4 = VIC_SEX,
+    axis5 = VIC_RACE,
+    axis6 = VIC_AGE_GROUP
+  )
+) +
+  scale_x_discrete(
+    limits = c(
+      "SUSP_SEX",
+      "SUSP_RACE",
+      "SUSP_AGE_GROUP",
+      "VIC_SEX",
+      "VIC_RACE",
+      "VIC_AGE_GROUP"
+    ),
+    expand = c(.1, .05)
+  ) +
+  geom_alluvium(aes(fill = VIC_SEX), width = 1 / 12) +
+  geom_stratum(width = 1 / 12,
+               fill = "grey80",
+               color = "grey20") +
+  geom_label(stat = "stratum",
+             aes(label = after_stat(stratum))) +
+  labs(y = "distribution", x = "crime category", fill='victim sex') +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle(
+    "Suspects and Victims' portraits in NYC",
+    "stratified by sex, race, and age group. (left three are suspicion and right three are victims)"
+  ) +
+  theme_void()
+
+# One problem left here is that the name of x axis cannot be shown. Also names of y axis and x axis cannot be shown...
+```
+We want to see the portrait of suspects and victims of all crimes. We pay much attention on the victim sex, as well as the other information relatex to one crime event.
+
+STOP WOMEN VIOLENCE!
