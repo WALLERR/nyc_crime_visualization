@@ -24,6 +24,8 @@ data = df = read.csv('/Users/mac/Downloads/NYPD_Complaint_Data_Historic_2018_202
 
 We have deeply understand that correlation does not represent causal relationship. Actually, due to the existence of confounding bias and selection bias, overal data distribution can even direct to the totally opposite conclusion. We are interested in exploring the correlation behind the data and have tried to interpret them by drawing attractive and insightful graph, and we pay much attention on extracting possible causal relationship to get a better understanding and present potential suggestions to avoid crimes, and thus create a safer and relaxing community.
 
+## Crime number vs category of crimes among different specific locations.
+
 ```{r, fig.width=20, fig.height=16}
 data %>%
   filter(
@@ -46,8 +48,7 @@ data %>%
 The incidences of harrassment are outstandingly high among all the types of crimes, with that of assult and petite larceny being the next highest. All of these three types of crimes are not severe and are still being a big part of social problems now in 2021. Another group that is outstanding is the 25-44 age group, with the largest number of victims among all the age groups. In addition, it can also be easily seen that Staten Island has the lowest incidents among all types of crimes.
 
 
-
-Next take a look at the possible change of the number of different types of the crimes and see if there would present a certain trend.
+## Trend of number of crimes over years
 
 ```{r}
 df_type_vs_year <- df %>%
@@ -83,7 +84,7 @@ While no remarkable contrast between the number of crimes among the three years,
 
 
 
-Combine the crime types with locations together with corresponding boroughs to see correlations among the dataset.
+## Parallel coordinates chart on crime types and locations
 
 ```{r}
 # group by crime types
